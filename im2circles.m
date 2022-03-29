@@ -45,28 +45,32 @@ dist = reshape(dist,size(im));
 %% Create RGB Image
 
 % Set up/preallocate variables
-%RGB = zeros(size(dist));
-%dist2 = dist;
-%radius = 100;
+RGB = zeros(size(dist));
+dist2 = dist;
+radius = 100;
 [x,y] = meshgrid(1:size(dist,2),1:size(dist,1),1:3);
-%i = 0;
+i = 0;
+pcts = [];
+radii = [];
 
-while mean2(radius) >= 5
+while mean2(radius) >= 100
     
     i = i + 1;
     
     [radius,C] = max(dist2,[],[1,2],'linear');
     mask = sqrt((y - y(C)).^2 + (x - x(C)).^2) - radius;
     dist2 = min(mask,dist2);
-    mask = 1 - min(max(mask,0),1);
+    
+    mask = -min(max(mask,-0.5),0.5) + 0.5;
     mask = mask .* sum(im .* mask,[1,2]) ./ sum(mask,[1,2]);
-    RGB = RGB + mask;
+    RGB = max(mask,RGB);
     
     if mod(i,15) == 0
         imshow(RGB)
+        disp(mean2(radius))
     end
     
 end
 
-imwrite(RGB,'waveCircles2.png','png')
+imwrite(RGB,'waveCircles5.png','png')
 imshow(RGB)
