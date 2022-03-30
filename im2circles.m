@@ -46,29 +46,30 @@ dist = reshape(dist,size(im));
 
 % Set up/preallocate variables
 RGB = zeros(size(dist));
-dist2 = dist;
-radius = 100;
-[x,y] = meshgrid(1:size(dist,2),1:size(dist,1),1:3);
+dist1 = dist;
+radius = max(dist1,[],[1,2],'linear');
+%dist2 = (dist + radius).^2;
+[x,y] = meshgrid(1:size(dist,2),1:size(dist,1),1:3);  
 i = 0;
 pcts = [];
 radii = [];
+data = zeros(10000,3);
 
-while mean2(radius) >= 100
+while mean2(radius) >= 1
     
     i = i + 1;
     
-    [radius,C] = max(dist2,[],[1,2],'linear');
-    mask = sqrt((y - y(C)).^2 + (x - x(C)).^2) - radius;
-    dist2 = min(mask,dist2);
+    [radius,C] = max(dist1,[],[1,2],'linear');
+    mask = (y - y(C)).^2 + (x - x(C)).^2;
+    dist1 = min((mask - radius.^2) ./ (dist1 + 2 * radius),dist1);
     
-    mask = -min(max(mask,-0.5),0.5) + 0.5;
+    mask = -min(max(mask - radius.^2,-radius),0) ./ radius;
     mask = mask .* sum(im .* mask,[1,2]) ./ sum(mask,[1,2]);
-    RGB = max(mask,RGB);
+    RGB = RGB + mask;
     
-    if mod(i,15) == 0
-        imshow(RGB)
-        disp(mean2(radius))
-    end
+    data(i,1) = mean2(radius);
+    data(i,2) = 100 * mean2(imabsdiff(im,RGB) ./ im);
+    data(i,3) = 100 * sum(double(RGB > 0),'all') / numel(dist1);
     
 end
 
