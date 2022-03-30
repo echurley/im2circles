@@ -55,6 +55,8 @@ pcts = [];
 radii = [];
 data = zeros(10000,3);
 
+profile on
+
 while mean2(radius) >= 1
     
     i = i + 1;
@@ -68,10 +70,13 @@ while mean2(radius) >= 1
     RGB = RGB + mask;
     
     data(i,1) = mean2(radius);
-    data(i,2) = 100 * mean2(imabsdiff(im,RGB) ./ im);
+    data(i,2) = 100 * mean2(abs(im - RGB) ./ im);
     data(i,3) = 100 * sum(double(RGB > 0),'all') / numel(dist1);
+    disp(data(i,1))
     
 end
 
-imwrite(RGB,'waveCircles5.png','png')
+profile viewer
+
+imwrite(RGB,'waveCircles2.png','png')
 imshow(RGB)
