@@ -2,21 +2,21 @@
 
 clear; close;
 
-im = imread('GreatWave.jpg');
+im = imread('PearlEarring.jpg');
 im = im2double(im);
 im = medfilt3(im,[5,5,1],'symmetric');
 %im = imadjust(im,stretchlim(im,[0.01 0.99]),[0 1]);
-%im = imresize(im,2);
+im = imresize(im,1.5);
 
 %% Create Edge Map
 
 % Find edges
-edges = edge(im(:,:),'sobel',0.05);
+edges = edge(im(:,:),'sobel',0.03);
 edges = reshape(edges,size(im));
 
 % Clean up edge map
 i = 1;
-while sum(edges,'all') / numel(edges) > .03
+while sum(edges,'all') / numel(edges) > 0.015
     i = i + 1;
     edges = bwareaopen(edges,i * 5,8);
 end
@@ -51,9 +51,7 @@ radius = max(dist1,[],[1,2],'linear');
 %dist2 = (dist + radius).^2;
 [x,y] = meshgrid(1:size(dist,2),1:size(dist,1),1:3);  
 i = 0;
-pcts = [];
-radii = [];
-data = zeros(10000,3);
+% data = zeros(10000,3);
 
 profile on
 
@@ -69,14 +67,14 @@ while mean2(radius) >= 1
     mask = mask .* sum(im .* mask,[1,2]) ./ sum(mask,[1,2]);
     RGB = RGB + mask;
     
-    data(i,1) = mean2(radius);
-    data(i,2) = 100 * mean2(abs(im - RGB) ./ im);
-    data(i,3) = 100 * sum(double(RGB > 0),'all') / numel(dist1);
-    disp(data(i,1))
+%     data(i,1) = mean2(radius);
+%     data(i,2) = 100 * mean2(abs(im - RGB) ./ im);
+%     data(i,3) = 100 * sum(double(RGB > 0),'all') / numel(dist1);
+%     disp(data(i,1))
     
 end
 
 profile viewer
 
-imwrite(RGB,'waveCircles2.png','png')
+imwrite(RGB,'pearlCircles.png','png')
 imshow(RGB)
