@@ -4,14 +4,14 @@ clear; close;
 
 im = imread('PearlEarring.jpg');
 im = im2double(im);
-im = medfilt3(im,[5,5,1],'symmetric');
+im = medfilt3(im,[11,11,1],'symmetric');
 %im = imadjust(im,stretchlim(im,[0.01 0.99]),[0 1]);
-im = imresize(im,1.5);
+im = imresize(im,2.28);
 
 %% Create Edge Map
 
 % Find edges
-edges = edge(im(:,:),'sobel',0.03);
+edges = edge(im(:,:),'sobel',0.02);
 edges = reshape(edges,size(im));
 
 % Clean up edge map
@@ -53,8 +53,6 @@ radius = max(dist1,[],[1,2],'linear');
 i = 0;
 % data = zeros(10000,3);
 
-profile on
-
 while mean2(radius) >= 1
     
     i = i + 1;
@@ -74,7 +72,5 @@ while mean2(radius) >= 1
     
 end
 
-profile viewer
-
-imwrite(RGB,'pearlCircles.png','png')
+imwrite(RGB,'pearlCircles1.png','png')
 imshow(RGB)
