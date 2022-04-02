@@ -1,13 +1,12 @@
 %% Import/Adjust Image
 
 clear; close;
-tic
+
 im = imread('PearlEarring.jpg');
 im = im2double(im);
 %im2 = imadjust(im,stretchlim(im,[0.5 0.99]),[0 1]);
 im = medfilt3(im,[7,7,1],'symmetric');
 im = imresize(im,2.28);
-%im2 = imresize(im2,2.28);
 
 %% Create Edge Map
 
@@ -30,16 +29,9 @@ dist = double(dist);
 dist1 = dist;
 RGB = zeros(size(im));
 radius = max(dist1,[],[1,2],'linear');
-%dist2 = (dist + radius).^2;
-[x,y] = meshgrid(1:size(im,2),1:size(im,1),1:3); 
-i = 0;
-% data = zeros(10000,3);
+[x,y] = meshgrid(1:size(im,2),1:size(im,1),1:3);
 
-tic
-
-while mean2(radius) >= 10
-    
-    i = i + 1;
+while mean2(radius) >= 1
     
     [radius,C] = max(dist1,[],[1,2],'linear');
     mask = (y - y(C)).^2 + (x - x(C)).^2;
@@ -51,7 +43,7 @@ while mean2(radius) >= 10
     RGB = RGB + color.^2 .* mask;
     
 end
-toc
+
 RGB = sqrt(RGB);
 imwrite(RGB,'pearlCircles3.png','png')
 imshow(RGB)
