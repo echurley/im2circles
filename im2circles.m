@@ -11,7 +11,7 @@ im = imresize(im,2.28);
 %% Create Edge Map
 
 % Find edges
-edges = edge(im(:,:),'canny',0.125);
+edges = edge(im(:,:),'canny',0.0875);
 edges = reshape(edges,size(im));
 
 % Pad edge map borders
@@ -38,12 +38,11 @@ while mean2(radius) >= 1
     dist1 = min((mask - radius.^2) ./ (dist1 + 2 * radius),dist1);
     
     mask = 1 - (mask - radius.^2) ./ radius;
-    mask = min(max(mask,0),1);
+    mask = min(max(mask,1),2) - 1;
     color = sum(im .* mask,[1,2]) ./ sum(mask,[1,2]);
     RGB = RGB + color.^2 .* mask;
     
 end
 
-RGB = sqrt(RGB);
-imwrite(RGB,'pearlCircles3.png','png')
-imshow(RGB)
+imwrite(sqrt(RGB),'pearlCircles4.png','png')
+imshow(sqrt(RGB))
