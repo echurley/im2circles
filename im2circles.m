@@ -4,9 +4,13 @@ clear; close;
 
 im = imread('PearlEarring.jpg');
 im = im2double(im);
-%im2 = imadjust(im,stretchlim(im,[0.5 0.99]),[0 1]);
 im = medfilt3(im,[7,7,1],'symmetric');
-im = imresize(im,2.28);
+%im = imresize(im,2.28);
+
+%% Convert Color Space
+
+%custom(:,1,1:3) = [.5 .5 0;0 .5 .5;.5 0 .5;.3 .3 .3];
+%out = rgb2custom(im,custom);
 
 %% Create Edge Map
 
