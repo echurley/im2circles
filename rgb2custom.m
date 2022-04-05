@@ -9,8 +9,6 @@ out = zeros([size(im,1,2),size(custom,1)]);
 
 for i = 1:size(im,1)
     for j = 1:size(im,2)
-    
-        out(i,j,:) = linsolve(custom,reshape(im(i,j,:),[3,1]));
-    
+        out(i,j,:) = linsolve(custom',reshape(im(i,j,:),[3,1]));
     end
 end
