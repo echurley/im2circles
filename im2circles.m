@@ -9,9 +9,8 @@ im = imresize(im,2.28);
 
 %% Convert Color Space
 
-%custom = [0 1 .5;1 .2 1;1 0 0];
-custom = [1 0 0;0 1 1];
-out = rgb2custom(im,custom);
+custom = [1 0 0; 0 1 1]';
+out = rgb2custom(im,custom,512);
 
 %% Create Edge Map
 
