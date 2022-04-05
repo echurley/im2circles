@@ -5,8 +5,16 @@ function out = rgb2custom(im,custom,num)
 % **If values in im are outside of the custom gamut, then they will be replaced with the
 %    nearest points inside of the gamut**
 
+% Create the RGB colormap
 [idx,cmap] = rgb2ind(im,num);
-cmap = linsolve(custom,cmap')';
-out = cmap(idx + 1,:);
-out = permute(out,[1 3 2]);
+
+cvar = optimvar('cvar',size(custom,1),size(cmap,1),'LowerBound',0,'UpperBound',1);
+obj = sum((custom' * cvar - cmap').^2,'all');
+prob = optimproblem('Objective',obj);
+sol = solve(prob);
+
+out = sol.cvar(:,idx + 1);
+out = permute(out,[3 2 1]);
 out = reshape(out,size(im,1),size(im,2),[]);
+
+

@@ -9,8 +9,8 @@ im = imresize(im,2.28);
 
 %% Convert Color Space
 
-custom = [1 0 0; 0 1 1]';
-out = rgb2custom(im,custom,512);
+custom = [1 0 0; 0 1 1];
+out = rgb2custom(im,custom,2048);
 
 %% Create Edge Map
 
@@ -35,7 +35,7 @@ circles = zeros(size(out));
 radius = max(dist1,[],[1,2],'linear');
 [x,y] = meshgrid(1:size(out,2),1:size(out,1),1:size(out,3));
 
-while mean2(radius) >= 1
+while mean2(radius) >= 5
     
     [radius,C] = max(dist1,[],[1 2],'linear');
     mask = (y - y(C)).^2 + (x - x(C)).^2;
