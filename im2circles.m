@@ -4,18 +4,19 @@ clear; close;
 
 im = imread('PearlEarring.jpg');
 im = im2double(im);
-im = medfilt3(im,[7,7,1],'symmetric');
-im = imresize(im,2.28);
 
 %% Convert Color Space
 
-custom = [1 0 0; 0 1 1];
+custom = [0 48 80; 112 150 160;176 183 167;250 227 173;218 20 21]';
+custom = custom / 255;
 out = rgb2custom(im,custom,2048);
+out = medfilt3(out,[7,7,1],'symmetric');
+out = imresize(out,2.28);
 
 %% Create Edge Map
 
 % Find edges
-edges = edge(out(:,:),'canny',0.0875);
+edges = edge(out(:,:),'canny',0.1);
 edges = reshape(edges,size(out));
 
 % Pad edge map borders
@@ -35,7 +36,7 @@ circles = zeros(size(out));
 radius = max(dist1,[],[1,2],'linear');
 [x,y] = meshgrid(1:size(out,2),1:size(out,1),1:size(out,3));
 
-while mean2(radius) >= 5
+while mean2(radius) >= 1
     
     [radius,C] = max(dist1,[],[1 2],'linear');
     mask = (y - y(C)).^2 + (x - x(C)).^2;
@@ -48,12 +49,12 @@ while mean2(radius) >= 5
     
 end
 
-RGB = zeros(size(im));
-im2 = zeros(size(im));
+RGB = zeros([size(out,1,2) 3]);
+im2 = zeros([size(out,1,2) 3]);
 for i = 1:size(circles,3)
-    RGB = RGB + sqrt(circles(:,:,i)) .* reshape(custom(i,:),[1 1 3]);
-    im2 = im2 + out(:,:,i) .* reshape(custom(i,:),[1 1 3]);
+    RGB = RGB + sqrt(circles(:,:,i)) .* reshape(custom(:,i),[1 1 3]);
+    im2 = im2 + out(:,:,i) .* reshape(custom(:,i),[1 1 3]);
 end
 
-imwrite(RGB,'pearlCircles4.png','png')
+imwrite(RGB,'pearlCircles5.png','png')
 imshow(RGB)

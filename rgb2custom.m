@@ -8,8 +8,8 @@ function out = rgb2custom(im,custom,num)
 % Create the RGB colormap
 [idx,cmap] = rgb2ind(im,num);
 
-cvar = optimvar('cvar',size(custom,1),size(cmap,1),'LowerBound',0,'UpperBound',1);
-obj = sum((custom' * cvar - cmap').^2,'all');
+cvar = optimvar('cvar',size(custom,2),size(cmap,1),'LowerBound',0,'UpperBound',1);
+obj = sum((custom * cvar - cmap').^2,'all');
 prob = optimproblem('Objective',obj);
 sol = solve(prob);
 
